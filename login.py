@@ -1,9 +1,9 @@
-from tkinter import *
-from main import *
+import tkinter as tk
+from MAIN2 import main
 import time #for clock on login screen
 
 #CREATE SPLASH SCREEN
-splash = Tk()
+splash = tk.Tk()
 #centre splash
 splash_width = 500
 splash_height = 250
@@ -20,12 +20,15 @@ splash.geometry(f'{splash_width}x{splash_height}+{int(x)}+{int(y)}')
 splash.overrideredirect(True)
 
 #splash image
-splash_img = PhotoImage(file = "splash.png")
-splash_img_label = Label(image=splash_img, borderwidth=0, highlightthickness=0)
+splash_img = tk.PhotoImage(file = "splash.png")
+splash_img_label = tk.Label(image=splash_img, borderwidth=0, highlightthickness=0)
 splash_img_label.grid(row=0, column=0)	
 
 
 #--- END OF SPLASH ---#
+#GET USERNAME FOR MAIN TITLE
+def get_user():
+    return user
 
 #CREATE LOGIN SCREEN
 def login_init():
@@ -35,7 +38,7 @@ def login_init():
 	global footer
 
 	#create LOGIN window
-	login = Tk()
+	login = tk.Tk()
 	#centre login window
 	login_width = 700
 	login_height = 450
@@ -53,8 +56,8 @@ def login_init():
 
 	login.configure(background ="grey") 
 	#login.iconbitmap("systemicon.ico") 
-	logo = PhotoImage(file = "login.png")
-	logo_label = Label(image=logo)
+	logo = tk.PhotoImage(file = "login.png")
+	logo_label = tk.Label(image=logo)
 	logo_label.grid(row=0, column=0)
 
 	def clock():
@@ -65,67 +68,70 @@ def login_init():
 		#wait 1000ms on each refresh (using clock lib)
 		datetime.after(1000,clock)
 
-	datetime = Label(login, text="", bg="grey", fg="white")
-	datetime.grid(row=1, column=0, padx=10, sticky=NW) 
+	datetime = tk.Label(login, text="", bg="grey", fg="white")
+	datetime.grid(row=1, column=0, padx=10, sticky=tk.NW) 
 	clock()	
+
 	#get username/password strings from user
-	username = StringVar()
-	password = StringVar()
+	username = tk.StringVar()
+	password = tk.StringVar()
 	#verify login from user entry
 	def login_verify():
 
+		#global so main can access
+		global user
 		user = (username.get())
 		pas = (password.get())
 		
 		if user == "j" and pas == "1":
-			correct_label = Label(login, bg="grey", fg="black", text="Logged in successfully. ")
-			correct_label.grid(row=4, column=0, padx=(47, 0), ipady=4, ipadx=30, sticky=N)
+			correct_label = tk.Label(login, bg="grey", fg="black", text="Logged in successfully. ")
+			correct_label.grid(row=4, column=0, padx=(47, 0), ipady=4, ipadx=30, sticky=tk.N)
 			correct_label.config(font=("Calibri", 12))
-			#initialise main 
+			#allow login quit from main program
+			login.quit()
 			main()
+
 		else:
-			incorrect_label = Label(login, bg="grey", fg="red4", text="Incorrect Login, please try again. ")
-			incorrect_label.grid(row=4, column=0, padx=(56, 0), ipady=4, sticky=N)
+			incorrect_label = tk.Label(login, bg="grey", fg="red4", text="Incorrect Login, please try again. ")
+			incorrect_label.grid(row=4, column=0, padx=(56, 0), ipady=4, sticky=tk.N)
 			incorrect_label.config(font=("Calibri", 12))
 
 	def login_quit():
 		login.quit()
 
 	#credential login labels 
-
-	username_label = Label(login, bg="grey", text="Username : ")
-	username_label.grid(row=1, column=0, padx=(192, 0), pady=(30,0), ipady=4, sticky=W)
+	username_label = tk.Label(login, bg="grey", text="Username : ")
+	username_label.grid(row=1, column=0, padx=(192, 0), pady=(30,0), ipady=4, sticky=tk.W)
 	username_label.config(font=("Calibri", 13))
 
-	password_label = Label(login, bg="grey", text="Password : ")
-	password_label.grid(row=2, column=0, padx=(196, 0), pady=(10,0), ipady=4, sticky=W)
+	password_label = tk.Label(login, bg="grey", text="Password : ")
+	password_label.grid(row=2, column=0, padx=(196, 0), pady=(10,0), ipady=4, sticky=tk.W)
 	password_label.config(font=("Calibri", 13))
 
 	#credential login boxes (280 is left padx, 0 is right padx)
-	username = Entry(login, width=30, textvariable=username)
-	username.grid(row=1, column=0, pady=(30, 0), padx=(280, 0), ipady=5, sticky=W)
+	username = tk.Entry(login, width=30, textvariable=username)
+	username.grid(row=1, column=0, pady=(30, 0), padx=(280, 0), ipady=5, sticky=tk.W)
 
-	password = Entry(login, show="*", width=30, textvariable=password)
-	password.grid(row=2, column=0, pady=(10, 0), padx=(280, 0), ipady=5,  sticky=W)
+	password = tk.Entry(login, show="*", width=30, textvariable=password)
+	password.grid(row=2, column=0, pady=(10, 0), padx=(280, 0), ipady=5,  sticky=tk.W)
 
 	#LOGIN SCREEN BUTTONS 
-
 	#Login button (calls main function)
-	login_button = Button(login, text="Login", command=login_verify, fg="white", bg="black")
-	login_button.grid(row=3, column=0, pady=(8,0), padx=(279, 0), ipadx=18, ipady=10, sticky=W)
+	login_button = tk.Button(login, text="Login", command=login_verify, fg="white", bg="black", borderwidth=0)
+	login_button.grid(row=3, column=0, pady=(8,0), padx=(279, 0), ipadx=18, ipady=10, sticky=tk.W)
 	login_button.config(font=("Calibri", 13))
 
 	#QUIT BUTTON
-	register_button_main = Button(login, text="Quit", command=login_quit,  fg="white", bg="black")
-	register_button_main.grid(row=3, column=0, pady=(8,0), padx=(375, 0), ipadx=23, ipady=10, sticky=W)
+	register_button_main = tk.Button(login, text="Quit", command=login_quit,  fg="white", bg="black",  borderwidth=0)
+	register_button_main.grid(row=3, column=0, pady=(8,0), padx=(375, 0), ipadx=23, ipady=10, sticky=tk.W)
 	register_button_main.config(font=("Calibri", 13))
 
 	#FOOTER
-	footer = PhotoImage(file = "footer.png")
-	footer_label = Label(image=footer, borderwidth=0, highlightthickness=0)
-	footer_label.grid(row=4, column=0, sticky=S, pady=(40,0))
+	footer = tk.PhotoImage(file = "footer.png")
+	footer_label = tk.Label(image=footer, borderwidth=0, highlightthickness=0)
+	footer_label.grid(row=4, column=0, sticky=tk.S, pady=(40,0))
 
 #splash timer - after 3s  initialise login, clock
 splash.after(3000, login_init)
 
-mainloop() 
+tk.mainloop() 

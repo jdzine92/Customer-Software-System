@@ -5,10 +5,10 @@
 #--- IMPORT MODULES ---#
 import tkinter as tk
 import sqlite3
-import mysql.connector
 from tkinter import colorchooser #for setup colour function
 from FUNCTIONS import search, add_record, query, setup
 from tkinter import messagebox
+import login
 
 #SET FONT
 xlge_font = ("Calibri", 18)
@@ -16,29 +16,42 @@ xlge_font = ("Calibri", 18)
 class Program:
 	def __init__(self, main):
 		self.main = main
-
-		#creates database/table - FOR DEMO MODE ONLY (RUN ONCE)
-		def create_database():
-			#Connect to SQL
-			demodb = mysql.connector.connect(
-				host="localhost",
-				user="root",
-				passwd="123"
+  
+		def create_db():
+			#create database / connection
+			conn = sqlite3.connect("demo.db")
+   			#create cursor
+			c = conn.cursor()
+			#create table
+			c.execute("""CREATE TABLE customer (
+				first_name TEXT,
+				last_name TEXT,
+				DOB TEXT,
+				address_l1 TEXT,
+				address_l2 TEXT,
+				address_l3 TEXT,
+				postcode TEXT,
+				email TEXT
 			)
-			#create cursor
-			cursor = mydb.cursor()
-			#create demo database
-			cursor.execute("CREATE DATABASE customers")
+			 
+			 """)
+   
+			#commit and close
+			conn.commit()
+			conn.close()
+   
+		#run once to create demo db / table
+		#create_db()
 
 		#FUNCTION FOR SEARCH
 		def search():
-			conn = sqlite3.connect("patients.db")
+			conn = sqlite3.connect("demo.db")
 			c = conn.cursor()
    
 			#get data from search_box
 			user_search = search_box.get()
 			#select everything from patients table, where last name = whatever was entered
-			sql = "SELECT * FROM patientstable WHERE last_name = %s"
+			sql = "SELECT * FROM customer WHERE last_name = %s"
 			name = (user_search, )
 			result = c.execute(sql, name)
    
@@ -46,11 +59,206 @@ class Program:
 			if not result:
 				result = "Record not found, please try again."
 			#display result on screen	
-			user_search_label = Label(searchframe, text=result)
-			user_search_label.grid(row=0, column=0)
+			user_search_lbl = tk.Label(searchframe, text=result)
+			user_search_lbl.grid(row=0, column=0)
    
 			conn.commit()
 			conn.close()
+   
+		#Submit data function for button inside frame
+		#ADD RECORD TO DB
+		def submit_record():
+			#make global so add_record can access
+			global submit_record
+			#connect to database
+			conn = sqlite3.connect("demo.db")
+			#create cursor
+			c = conn.cursor()
+
+			#insert into table
+			c.execute("INSERT INTO customer VALUES (:first_name, :last_name, :DOB, :address_l1, :address_l2, :address_l3, :postcode, :email)",
+					{
+
+						'first_name': first_name.get(),
+						'last_name': last_name.get(),
+						'DOB': DOB.get(),
+						'address_l1': address_l1.get(),
+						'address_l2': address_l2.get(),
+						'address_l3': address_l3.get(),
+						'postcode': postcode.get(),
+						'email': email.get()
+					}
+
+				)
+			#commit and close db
+			conn.commit()
+			conn.close()
+			#display error or success message to user
+			if c.rowcount < 1:
+				error_lbl = tk.Label(addrecordframe, fg="white", bg="gray30", text="Error, record was not entered. ")
+				error_lbl.grid(row=11, column=2, pady=10, ipady=4, sticky=tk.W)
+				error_lbl.config(font=("Calibri", 13))
+			else:
+				success_lbl = tk.Label(addrecordframe, fg="white", bg="gray30", text="Record entered sucessfully. ")
+				success_lbl.grid(row=11, column=2, pady=10, ipady=4, sticky=tk.W)
+				success_lbl.config(font=("Calibri", 13))
+
+			#clear textboxes after submitting
+			first_name.delete(0, END)
+			last_name.delete(0, END)
+			DOB.delete(0, END)
+			address_l1.delete(0, END)
+			address_l2.delete(0, END)
+			address_l3.delete(0, END)
+			postcode.delete(0, END)
+			email.delete(0, END)
+   
+			#FUNCTION FOR ADD RECORD BUTTON
+		def add_record():
+			#MENU element - CURRENT
+			add_button = tk.Button(buttonframe, text="Add Record", command=add_record,  fg="white", bg="#254c6e", borderwidth=0)
+			add_button.grid(row=3, column=0, ipadx=56, ipady=10, sticky=tk.W)
+			add_button.config(font=("Calibri", 13))
+   
+			#FRAME for add record, make global so submit_record, edit can access
+			global addrecordframe
+			addrecordframe = tk.LabelFrame(main, bg="gray80", width=845, height=300, borderwidth=0)
+			addrecordframe.grid(row=3, column=1, sticky=tk.NSEW)
+			#force width and height on frame
+			addrecordframe.grid_propagate(0)
+
+			#add record title
+			addrecord_lbl = tk.Label(addrecordframe, fg="gray10", bg="gray80", text="Adding new record ")
+			addrecord_lbl.grid(row=3, column=1, pady=(10,30), padx=(20,0), ipady=4, sticky=tk.W)
+			addrecord_lbl.config(font=("Calibri", 16)) 
+
+			#entry boxes (make global so submit_record() can access)
+			global first_name
+			first_name = tk.Entry(addrecordframe, width=30)
+			first_name.grid(row=4, column=2, pady=5, padx=5, ipady=2, sticky=tk.W)
+
+			global last_name
+			last_name = tk.Entry(addrecordframe, width=30)
+			last_name.grid(row=4, column=4, pady=5, padx=5, ipady=2, sticky=tk.W)
+
+			global DOB
+			DOB = tk.Entry(addrecordframe, width=15)
+			DOB.grid(row=5, column=4, pady=5, padx=5, ipady=2, sticky=tk.W)
+
+			global address_l1
+			address_l1 = tk.Entry(addrecordframe, width=30)
+			address_l1.grid(row=5, column=2, pady=5, padx=5, ipady=2, sticky=tk.W)
+
+			global address_l2
+			address_l2 = tk.Entry(addrecordframe, width=30)
+			address_l2.grid(row=6, column=2, pady=5, padx=5, ipady=2, sticky=tk.W)
+
+			global address_l3
+			address_l3 = tk.Entry(addrecordframe, width=30)
+			address_l3.grid(row=7, column=2, pady=5, padx=5, ipady=2, sticky=tk.W)
+
+			global postcode
+			postcode = tk.Entry(addrecordframe, width=30)
+			postcode.grid(row=8, column=2, pady=5, padx=5, ipady=2, sticky=tk.W)
+   
+			global email
+			email = tk.Entry(addrecordframe, width=30)
+			email.grid(row=9, column=2, pady=5, padx=5, ipady=2, sticky=tk.W)
+
+			#text box labels
+			first_name_lbl = tk.Label(addrecordframe, fg="gray30", bg="gray80", text="First Name")
+			first_name_lbl.grid(row=4, column=1, padx=10, pady=5, sticky=tk.E)
+
+			last_name_lbl = tk.Label(addrecordframe, fg="gray30", bg="gray30", text="Last Name")
+			last_name_lbl.grid(row=4, column=3, padx=10, sticky=tk.E)
+
+			DOB_lbl = tk.Label(addrecordframe, fg="white", bg="gray30", text="DOB")
+			DOB_lbl.grid(row=5, column=3, padx=10, sticky=tk.E)
+
+			address_l1_lbl = tk.Label(addrecordframe, fg="white", bg="gray30", text="Address Line 1")
+			address_l1_lbl.grid(row=5, column=1, padx=10, pady=5, sticky=tk.E)
+
+			address_l2_lbl = tk.Label(addrecordframe, fg="white", bg="gray30", text="Address Line 2")
+			address_l2_lbl.grid(row=6, column=1, padx=10, pady=5, sticky=tk.E)
+
+			address_l3_lbl = tk.Label(addrecordframe, fg="white", bg="gray30", text="City")
+			address_l3_lbl.grid(row=7, column=1, padx=10, pady=5, sticky=tk.E)
+
+			postcode_label = tk.Label(addrecordframe, fg="white", bg="gray30", text="Postcode")
+			postcode_label.grid(row=8, column=1, padx=10, pady=5, sticky=tk.E)
+   
+			email_lbl = tk.Label(addrecordframe, fg="white", bg="gray30", text="Email")
+			email_lbl.grid(row=9, column=1, padx=10, pady=5, sticky=tk.E)
+
+			#Submit entry button
+			submit_button = tk.Button(addrecordframe, text="Add Record", command=submit_record,  fg="white", bg="gray30", borderwidth=0)
+			submit_button.grid(row=10, column=4, pady=10, padx=20, ipadx=5, ipady=5, sticky=tk.SE)
+			submit_button.config(font=("Calibri", 14)) 
+   
+		#Display function for SHOW_ALL
+		def query():
+			#FRAME for show all
+			global showrecordframe
+			showrecordframe = tk.LabelFrame(main, bg="gray30", width=750, height=450, borderwidth=0)
+			showrecordframe.grid(row=3, column=1, pady=10)
+			#force width and height on frame
+			showrecordframe.grid_propagate(0)
+   
+			#show all record title
+			showrecord_lbl = tk.Label(addrecordframe, fg="white", bg="gray30", text="Showing All Records ")
+			showrecord_lbl.grid(row=3, column=1, pady=10, padx=(20,0), ipady=4, sticky=tk.W)
+			showrecord_lbl.config(font=("Calibri", 13)) 
+
+			#connect to database
+			conn = sqlite3.connect("demo.db")
+			#create cursor
+			c = conn.cursor()
+			#Show user how many records there are in db
+			#run query (select everything)
+			c.execute("SELECT * FROM customer")
+			records = c.fetchall()
+			recordcount = len(records)
+		
+			#showing all records label
+			allrecords_lbl = tk.Label(showrecordframe, fg="white", bg="gray30", text="There are " + str(recordcount) + " records in the database today.")
+			allrecords_lbl.grid(row=0, column=0, padx=(20, 0), pady=(20,0), ipady=4, sticky=tk.W)
+			allrecords_lbl.config(font=("Calibri", 13))
+			#run query (select everything and the primary key(oid))
+			c.execute("SELECT *,oid FROM customer")
+			#fetch all records (assign var)
+			#show all records in the system
+			records = c.fetchall()
+			''' format results:
+			set variable print_records to nill
+			cycle through each item in record, adding a new line
+			after every entry. We have made it str(record) because
+			there are a mixture of ints and strs in the data, and 
+			we cannot concantanate these together without converting
+			everything to a string first ''' 
+			print_records = ''
+			for record in records:
+				print_records += str(record[7]) + " | " + str(record[0]) + " " + str(record[1]) + "\n" + str(record[2]) + "\n" + str(record[3]) + ", " + str(record[4]) + ", " + str(record[5]) + ", " + str(record[6]) + "\n\n" 
+			#show results in query label
+			query_lbl = tk.Label(showrecordframe, text=print_records)
+			query_lbl.grid(row=1, column=0, columnspan=2, pady=10, padx=30, ipadx=10, ipady=10, sticky=tk.W)		
+			#commit and close db
+			conn.commit()
+			conn.close()
+			#Delete entry box label
+			delete_box_lbl = tk.Label(showrecordframe, text="Select ID to modify: ", fg="white", bg="gray30")
+			delete_box_lbl.grid(row=1, column=2, pady=(30,0), padx=(20, 0), sticky=tk.W)
+			delete_box_lbl.config(font=("Calibri", 13))
+			#Entry box to enter ID the user wishes to delete from DB
+			global delete_box
+			delete_box = tk.Entry(showrecordframe, width=10)
+			delete_box.grid(row=1, column=2, padx=(165,0), pady=(30,0), sticky=tk.W)
+			#delete button - calls DEF DELETE
+			delete_button = tk.Button(showrecordframe, text="Delete Record", command=delete,  fg="white", bg="black")
+			delete_button.grid(row=1, column=2, pady=(110,0), padx=(30,0), ipadx=10, ipady=10, sticky=tk.W)
+			#edit button - calls DEF EDIT
+			edit_button = tk.Button(showrecordframe, text="Edit Record", command=edit, fg="white", bg="black")
+			edit_button.grid(row=1, column=2, pady=(110,0), padx=(140,0), ipadx=16, ipady=10, sticky=tk.W)	
+
   
 		#FUNCTION FOR SETUP
 		def setup():
@@ -193,8 +401,8 @@ class Program:
 		#QUIT
 		def quit():
 			log_out = messagebox.askyesno("Log Out", "You are about to log out, are you sure ?")
-			#Exit the program
-			main.quit()
+			if log_out == 'yes':
+				main.destroy()
   
 		#--- LOGOFRAME ---#
 		#Define logoframe size/position
@@ -238,11 +446,12 @@ class Program:
 		#--- BUTTONFRAME ---#
 		#Create button frame
 		buttonframe = tk.LabelFrame(main, bg="#6492b6", borderwidth=0)
-		buttonframe.grid(row=3, column=0, ipady=100, sticky=tk.NW)
+		buttonframe.grid(row=3, column=0, ipady=120, sticky=tk.NW)
 
 		#--- MENU BUTTONS ---#
 		#Add button - calls DEF ADD_RECORD
-		add_button = tk.Button(buttonframe, text="Add Record", command=create_database,  fg="white", bg="#366f9e", borderwidth=0)
+		global add_button
+		add_button = tk.Button(buttonframe, text="Add Record", command=add_record,  fg="white", bg="#366f9e", borderwidth=0)
 		add_button.grid(row=3, column=0, ipadx=56, ipady=10, sticky=tk.W)
 		add_button.config(font=("Calibri", 13))
   
@@ -266,6 +475,10 @@ class Program:
 		quit_button.grid(row=9, column=0, ipadx=81, ipady=10, sticky=tk.W)
 		quit_button.config(font=("Calibri", 13))
   
+#GET USERNAME
+def get_user():
+	return login.get_user()
+  
 	 		
 #RUN TKINTER MAINLOOP		
 def main(): 
@@ -273,8 +486,8 @@ def main():
 	root = tk.Toplevel()
 	#Declare an instance of the Program class to init program
 	program = Program(root)
- 
-	root.title("Welcome User")
+	username = get_user()
+	root.title("Welcome  " + username)
 	#Set window size
 	root.geometry("1000x700")
 	root.configure(background ="white") 
