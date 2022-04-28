@@ -2,6 +2,7 @@
 ##### A generic system to store customer details, built with Python, Tkinter and SQlite. Currently has basic functionalities only due to myself being the sole developer of this application. If time allows I will further develop some more complex ideas.
 
 ![alt text][login]
+***
 ![alt text][system]
 
 
