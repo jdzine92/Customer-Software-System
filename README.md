@@ -7,4 +7,4 @@
 
 
 [login]: https://github.com/jdzine92/Python-Customer-Software-System/blob/main/jordan-systems.png "Jordan Systems Login Screen"
-[system]: https://github.com/jdzine92/Python-Customer-Software-System/blob/main/system.png "Jordan Systems Demo"
+[system]: https://github.com/jdzine92/Python-Customer-Software-System/blob/main/system-main.png "Jordan Systems Demo"
