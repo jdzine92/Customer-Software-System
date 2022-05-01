@@ -72,13 +72,8 @@ def login_init():
 	datetime.grid(row=1, column=0, padx=10, sticky=tk.NW) 
 	clock()	
 
-	#get username/password strings from user
-	username = tk.StringVar()
-	password = tk.StringVar()
 	#verify login from user entry
 	def login_verify():
-
-		#global so main can access
 		global user
 		user = (username.get())
 		pas = (password.get())
@@ -87,9 +82,12 @@ def login_init():
 			correct_label = tk.Label(login, bg="grey", fg="black", text="Logged in successfully. ")
 			correct_label.grid(row=4, column=0, padx=(47, 0), ipady=4, ipadx=30, sticky=tk.N)
 			correct_label.config(font=("Calibri", 12))
-			#allow login quit from main program
-			login.quit()
+			#delete user and pass fields upon login for security
+			username.delete(0, tk.END)
+			password.delete(0, tk.END)
+			#run main program
 			main()
+	
 
 		else:
 			incorrect_label = tk.Label(login, bg="grey", fg="red4", text="Incorrect Login, please try again. ")
@@ -97,7 +95,7 @@ def login_init():
 			incorrect_label.config(font=("Calibri", 12))
 
 	def login_quit():
-		login.quit()
+		login.destroy()
 
 	#credential login labels 
 	username_label = tk.Label(login, bg="grey", text="Username : ")
@@ -109,10 +107,12 @@ def login_init():
 	password_label.config(font=("Calibri", 13))
 
 	#credential login boxes (280 is left padx, 0 is right padx)
-	username = tk.Entry(login, width=30, textvariable=username)
+	#global to delete text upon login for security
+	global username, password
+	username = tk.Entry(login, width=30)
 	username.grid(row=1, column=0, pady=(30, 0), padx=(280, 0), ipady=5, sticky=tk.W)
 
-	password = tk.Entry(login, show="*", width=30, textvariable=password)
+	password = tk.Entry(login, show="*", width=30)
 	password.grid(row=2, column=0, pady=(10, 0), padx=(280, 0), ipady=5,  sticky=tk.W)
 
 	#LOGIN SCREEN BUTTONS 

@@ -53,10 +53,12 @@ class Program:
 
 		#FUNCTION FOR SEARCH
 		def search():
+			#destroy any other frames open
+			destroy_frames()
 			#create search results frame
 			global searchresultsframe
-			searchresultsframe = tk.LabelFrame(main, fg="black", bg="gray80", width=1200, height=400, borderwidth=0)
-			searchresultsframe.grid(row=3, column=1, sticky=tk.NSEW)
+			searchresultsframe = tk.Frame(main, bg="gray80", width=1215, height=400, borderwidth=0)
+			searchresultsframe.grid(row=2, column=1, sticky=tk.NSEW)
 			#force width and height on frame
 			searchresultsframe.grid_propagate(0)
 
@@ -133,9 +135,10 @@ class Program:
 				if c.rowcount < 1:
 					error_lbl = tk.Label(addrecordframe, fg="red4", bg="gray80", font=font_14, text="Error, record entry failed. Please contact HelpDesk on xxxx-xxx-xxxx").grid(row=11, column=2, pady=10, ipady=4, sticky=tk.W)
 				else:
-					success_lbl = tk.Label(addrecordframe, fg="green4", bg="gray80", font=font_14, text="Record entered sucessfully. ").grid(row=11, column=2, pady=10, ipady=4, sticky=tk.W)
+					success_lbl = tk.Label(addrecordframe, fg="green4", bg="gray80", font=font_14, text="Record entered sucessfully. ").grid(row=11, column=3, pady=10, ipady=4, sticky=tk.W)
 
 				#clear textboxes after submitting
+				title.delete(0, tk.END)
 				first_name.delete(0, tk.END)
 				last_name.delete(0, tk.END)
 				DOB.delete(0, tk.END)
@@ -144,73 +147,66 @@ class Program:
 				address_l3.delete(0, tk.END)
 				postcode.delete(0, tk.END)
 				email.delete(0, tk.END)
+				telephone.delete(0, tk.END)
 	
 		#FUNCTION FOR ADD RECORD BUTTON
 		def add_record():
-			#MENU element - CURRENT
-			add_button = tk.Button(buttonframe, font=font_13, text="Add Record", command=add_record,  fg="white", bg="#254c6e", borderwidth=0).grid(row=3, column=0, ipadx=56, ipady=10, sticky=tk.W)
-   
+			#destroy any other frames open
+			destroy_frames()
+   			#handle current tab colour
+			handle_current_tab("addrecord")
 			#FRAME for add record, make global so submit_record, edit can access
 			global addrecordframe
-			addrecordframe = tk.LabelFrame(main, fg="black", bg="gray80", width=1215, height=300, borderwidth=0)
-			addrecordframe.grid(row=3, column=1, sticky=tk.NSEW)
+			addrecordframe = tk.Frame(main, bg="gray80", width=1215, height=500, borderwidth=0)
+			addrecordframe.grid(row=2, column=1, sticky=tk.NSEW)
 			#force width and height on frame
 			addrecordframe.grid_propagate(0)
 
 			#add record title
-			addrecord_lbl = tk.Label(addrecordframe, fg="gray10", bg="gray80", font=font_16, text="Adding new record ").grid(row=3, column=1, pady=(10,30), padx=(20,0), ipady=4, sticky=tk.W)
+			addrecord_lbl = tk.Label(addrecordframe, fg="gray10", bg="gray80", font=font_16, text="Adding new record ").grid(row=0, column=0, pady=(10,30), padx=(20,0), ipady=4, sticky=tk.W)
 
 			#entry boxes (make global so submit_record() can access)
-			global title
-			global first_name
-			global last_name
-			global DOB
-			global address_l1
-			global address_l2
-			global address_l3
-			global postcode
-			global email
-			global telephone
+			global title, first_name, last_name, DOB, address_l1, address_l2, address_l3, postcode, email, telephone
    
 			#keep .grid() separate, interferes with. get() for submit_record()
 			title = tk.Entry(addrecordframe, width=4)
-			title.grid(row=4, column=2, pady=5, padx=5, ipady=2, sticky=tk.W)
+			title.grid(row=1, column=1, pady=5, padx=5, ipady=2, sticky=tk.W)
 			first_name = tk.Entry(addrecordframe, width=30)
-			first_name.grid(row=5, column=2, pady=5, padx=5, ipady=2, sticky=tk.W)
+			first_name.grid(row=2, column=1, pady=5, padx=5, ipady=2, sticky=tk.W)
 			last_name = tk.Entry(addrecordframe, width=30)
-			last_name.grid(row=5, column=4, pady=5, padx=5, ipady=2, sticky=tk.W)
+			last_name.grid(row=2, column=3, pady=5, padx=5, ipady=2, sticky=tk.W)
 			DOB = tk.Entry(addrecordframe, width=10)
-			DOB.grid(row=6, column=2, pady=5, padx=5, ipady=2, sticky=tk.W)
+			DOB.grid(row=3, column=1, pady=5, padx=5, ipady=2, sticky=tk.W)
 			address_l1 = tk.Entry(addrecordframe, width=30)
-			address_l1.grid(row=7, column=2, pady=5, padx=5, ipady=2, sticky=tk.W)
+			address_l1.grid(row=4, column=1, pady=5, padx=5, ipady=2, sticky=tk.W)
 			address_l2 = tk.Entry(addrecordframe, width=30)
-			address_l2.grid(row=7, column=4, pady=5, padx=5, ipady=2, sticky=tk.W)
+			address_l2.grid(row=4, column=3, pady=5, padx=5, ipady=2, sticky=tk.W)
 			address_l3 = tk.Entry(addrecordframe, width=30)
-			address_l3.grid(row=8, column=2, pady=5, padx=5, ipady=2, sticky=tk.W)
+			address_l3.grid(row=5, column=1, pady=5, padx=5, ipady=2, sticky=tk.W)
 			postcode = tk.Entry(addrecordframe, width=30)
-			postcode.grid(row=8, column=4, pady=5, padx=5, ipady=2, sticky=tk.W)
+			postcode.grid(row=5, column=3, pady=5, padx=5, ipady=2, sticky=tk.W)
 			email = tk.Entry(addrecordframe, width=30)
-			email.grid(row=10, column=2, pady=5, padx=5, ipady=2, sticky=tk.W)
+			email.grid(row=7, column=1, pady=5, padx=5, ipady=2, sticky=tk.W)
 			telephone = tk.Entry(addrecordframe, width=11)
-			telephone.grid(row=10, column=4, pady=5, padx=5, ipady=2, sticky=tk.W)
+			telephone.grid(row=7, column=3, pady=5, padx=5, ipady=2, sticky=tk.W)
 
 			#text box labels
-			title_lbl = tk.Label(addrecordframe, fg="gray30", bg="gray80", font=font_13, text="Title *").grid(row=4, column=1, padx=10, pady=5, sticky=tk.E)
-			first_name_lbl = tk.Label(addrecordframe, fg="gray30", bg="gray80", font=font_13, text="First Name *").grid(row=5, column=1, padx=10, pady=5, sticky=tk.E)
-			last_name_lbl = tk.Label(addrecordframe, fg="gray30", bg="gray80", font=font_13, text="Last Name *").grid(row=5, column=3, padx=10, sticky=tk.E)
-			DOB_lbl = tk.Label(addrecordframe, fg="gray30", bg="gray80", font=font_13, text="DOB").grid(row=6, column=1, padx=10, sticky=tk.E)
-			address_l1_lbl = tk.Label(addrecordframe, fg="gray30", bg="gray80", font=font_13, text="Address Line 1 *").grid(row=7, column=1, padx=10, pady=5, sticky=tk.E)
-			address_l2_lbl = tk.Label(addrecordframe, fg="gray30", bg="gray80", font=font_13, text="Address Line 2").grid(row=7, column=3, padx=10, pady=5, sticky=tk.E)
-			address_l3_lbl = tk.Label(addrecordframe, fg="gray30", bg="gray80", font=font_13, text="City").grid(row=8, column=1, padx=10, pady=5, sticky=tk.E)
-			postcode_label = tk.Label(addrecordframe, fg="gray30", bg="gray80", font=font_13, text="Postcode *").grid(row=8, column=3, padx=10, pady=5, sticky=tk.E)
-			email_lbl = tk.Label(addrecordframe, fg="gray30", bg="gray80", font=font_13, text="Email").grid(row=10, column=1, padx=10, pady=5, sticky=tk.E)
-			telephone_lbl = tk.Label(addrecordframe, fg="gray30", bg="gray80", font=font_13, text="Phone *").grid(row=10, column=3, padx=10, pady=5, sticky=tk.E)
+			title_lbl = tk.Label(addrecordframe, fg="gray30", bg="gray80", font=font_13, text="Title *").grid(row=1, column=0, padx=10, pady=5, sticky=tk.E)
+			first_name_lbl = tk.Label(addrecordframe, fg="gray30", bg="gray80", font=font_13, text="First Name *").grid(row=2, column=0, padx=10, pady=5, sticky=tk.E)
+			last_name_lbl = tk.Label(addrecordframe, fg="gray30", bg="gray80", font=font_13, text="Last Name *").grid(row=2, column=2, padx=10, sticky=tk.E)
+			DOB_lbl = tk.Label(addrecordframe, fg="gray30", bg="gray80", font=font_13, text="DOB").grid(row=3, column=0, padx=10, sticky=tk.E)
+			address_l1_lbl = tk.Label(addrecordframe, fg="gray30", bg="gray80", font=font_13, text="Address Line 1 *").grid(row=4, column=0, padx=10, pady=5, sticky=tk.E)
+			address_l2_lbl = tk.Label(addrecordframe, fg="gray30", bg="gray80", font=font_13, text="Address Line 2").grid(row=4, column=2, padx=10, pady=5, sticky=tk.E)
+			address_l3_lbl = tk.Label(addrecordframe, fg="gray30", bg="gray80", font=font_13, text="City").grid(row=5, column=0, padx=10, pady=5, sticky=tk.E)
+			postcode_label = tk.Label(addrecordframe, fg="gray30", bg="gray80", font=font_13, text="Postcode *").grid(row=5, column=2, padx=10, pady=5, sticky=tk.E)
+			email_lbl = tk.Label(addrecordframe, fg="gray30", bg="gray80", font=font_13, text="Email").grid(row=7, column=0, padx=10, pady=5, sticky=tk.E)
+			telephone_lbl = tk.Label(addrecordframe, fg="gray30", bg="gray80", font=font_13, text="Phone *").grid(row=7, column=2, padx=10, pady=5, sticky=tk.E)
    
 			#advisory label (wrap length / justify attributes given)
-			advisory_lbl = tk.Label(addrecordframe, fg="red4", bg="gray80", font=font_13, text="Fields marked with a * are compulsory.", wraplength=150, justify="left").grid(row=12, column=1, padx=10, pady=5, sticky=tk.E)
+			advisory_lbl = tk.Label(addrecordframe, fg="red4", bg="gray80", font=font_13, text="Fields marked with a * are compulsory.", wraplength=150, justify="left").grid(row=8, column=1, padx=10, pady=5, sticky=tk.W)
    
 			#Submit entry button
-			submit_button = tk.Button(addrecordframe, font=font_14, text="Add Record", command=submit_record, fg="white", bg="black", borderwidth=0).grid(row=11, column=4, pady=(30,0), padx=0, ipadx=5, ipady=5, sticky=tk.SE)
+			submit_button = tk.Button(addrecordframe, font=font_14, text="Add Record", command=submit_record, fg="white", bg="black", borderwidth=0).grid(row=9, column=3, pady=(30,0), padx=0, ipadx=5, ipady=5, sticky=tk.SE)
    
 		#Delete function for Delete Record button
 		def delete():
@@ -241,47 +237,62 @@ class Program:
 				telephone.delete(0, tk.END)
 	
 		def update():
-			#get record
-			selected = my_tree.focus()
-			#update tree
-			my_tree.item(selected, text="", values=(cust_id.get(), title.get(), first_name.get(), last_name.get(), DOB.get(), address_l1.get(), address_l2.get(), address_l3.get(), postcode.get(), email.get(), telephone.get(),))
-		
-			#connect to database
-			conn = sqlite3.connect("demo.db")
-			#create cursor
-			c = conn.cursor()
+			#validate data entry first
+			if first_name.get() == '':
+				messagebox.showerror('Error!', 'First Name cannot be blank.')
+			elif last_name.get() == '':
+					messagebox.showerror('Error!', 'Last Name cannot be blank.')
+			elif address_l1.get() == '':
+					messagebox.showerror('Error!', 'Address Line 1 cannot be blank.')
+			elif postcode.get() == '':
+					messagebox.showerror('Error!', 'Postcode cannot be blank.')
+			elif telephone.get() == '':
+					messagebox.showerror('Error!', 'Phone cannot be blank.')
+			else:
+				#get record
+				selected = my_tree.focus()
+				#update tree
+				my_tree.item(selected, text="", values=(cust_id.get(), title.get(), first_name.get(), last_name.get(), DOB.get(), address_l1.get(), address_l2.get(), address_l3.get(), postcode.get(), email.get(), telephone.get(),))
+			
+				#connect to database
+				conn = sqlite3.connect("demo.db")
+				#create cursor
+				c = conn.cursor()
 
-			#update database
-			c.execute(""" UPDATE customer SET
-					title = :title,
-					first_name = :first_name,
-					last_name = :last_name,
-					DOB = :DOB,
-					address_l1 = :address_l1,
-					address_l2 = :address_l2,
-					address_l3 = :address_l3,
-					postcode = :postcode,
-					email = :email,
-					telephone = :telephone
-				
-				WHERE oid = :oid """,
-				{
-						'title': title.get(),
-						'first_name': first_name.get(),
-						'last_name': last_name.get(),
-						'DOB': DOB.get(),
-						'address_l1': address_l1.get(),
-						'address_l2': address_l2.get(),
-						'address_l3': address_l3.get(),
-						'postcode': postcode.get(),
-						'email': email.get(),
-						'telephone': telephone.get(),
-						'oid': cust_id.get()
-				}
-				)
-   
-			conn.commit()
-			conn.close()
+				#update database
+				c.execute(""" UPDATE customer SET
+						title = :title,
+						first_name = :first_name,
+						last_name = :last_name,
+						DOB = :DOB,
+						address_l1 = :address_l1,
+						address_l2 = :address_l2,
+						address_l3 = :address_l3,
+						postcode = :postcode,
+						email = :email,
+						telephone = :telephone
+					
+					WHERE oid = :oid """,
+					{
+							'title': title.get(),
+							'first_name': first_name.get(),
+							'last_name': last_name.get(),
+							'DOB': DOB.get(),
+							'address_l1': address_l1.get(),
+							'address_l2': address_l2.get(),
+							'address_l3': address_l3.get(),
+							'postcode': postcode.get(),
+							'email': email.get(),
+							'telephone': telephone.get(),
+							'oid': cust_id.get()
+					}
+					)
+	
+				conn.commit()
+				conn.close()
+	
+				#print update success label
+				update_success_lbl = tk.Label(btn_frame, fg="green4", bg="#eee", font=font_13, text="Record Updated", wraplength=150, justify="left").grid(row=0, column=2, padx=10, sticky=tk.W)
    
 	
    
@@ -316,22 +327,26 @@ class Program:
 			postcode.insert(0, values[8])
 			email.insert(0, values[9])
 			telephone.insert(0, values[10])
+   
+			#prevent ID from being edited by user
+			cust_id.configure(state=tk.DISABLED)
 
 	
 		#Display function for SHOW_ALL
 		def show_all():
-			#destroy_frames()
-   
+			#destroy any other frames open
+			destroy_frames()
+   			#handle current tab colour
+			handle_current_tab("showall")
 			#FRAME for show all
 			global showrecordframe
-			showrecordframe = tk.Frame(main, bg="gray80", width=1215, height=300, borderwidth=0)
-			showrecordframe.grid(row=3, column=1)
+			showrecordframe = tk.Frame(main, bg="gray80", borderwidth=0)
+			showrecordframe.grid(row=2, column=1)
 			#force width and height on frame
-			showrecordframe.grid_propagate(0)
+			#showrecordframe.grid_propagate(0)
    
 			#show all record title
-			showrecord_lbl = tk.Label(showrecordframe, fg="gray10", bg="gray80", font=font_16, text="Showing All Records ").grid(row=0, column=0, padx=(20,0), ipady=4, sticky=tk.W)
-
+			showrecord_lbl = tk.Label(showrecordframe, fg="gray10", bg="gray80", font=font_16, text="Showing All Records ").grid(row=0, column=0, ipady=4, sticky=tk.W)
 			#style / colours
 			style = ttk.Style()
 			style.theme_use('default')
@@ -351,7 +366,8 @@ class Program:
 
 			#create frame to allow for scrollbar
 			tree_frame = tk.Frame(showrecordframe)
-			tree_frame.pack()
+			tree_frame.grid(row=1, column=0, sticky=tk.NW)
+   
 			#create scrollbar
 			scroll = tk.Scrollbar(tree_frame)
 			scroll.pack(side=tk.RIGHT, fill=tk.Y)
@@ -425,7 +441,7 @@ class Program:
 				
 			#add entry boxes for editing
 			data_frame = tk.LabelFrame(showrecordframe, text="Record", bg="gray80")
-			data_frame.pack(fill="x", expand="yes")
+			data_frame.grid(row=2, column=0, columnspan=4, ipadx=240, sticky=tk.NW)
 
 			#make global so select() can access
 			global title, cust_id, first_name, last_name, DOB, address_l1, address_l2, address_l3, postcode, email, telephone
@@ -466,51 +482,34 @@ class Program:
 			telephone_lbl = tk.Label(data_frame, fg="gray30", bg="gray80", font=font_13, text="Phone *").grid(row=10, column=3, padx=10, pady=5, sticky=tk.E)
    
 			#add buttons
-			btn_frame = tk.LabelFrame(showrecordframe)
-			btn_frame.pack(fill="x", expand="yes")
+			#make global for update() to print success label 
+			global btn_frame
+			btn_frame = tk.Frame(showrecordframe, borderwidth=0)
+			btn_frame.grid(row=3, column=0, columnspan=4, sticky=tk.NSEW)
 
 			edit_btn = tk.Button(btn_frame, font=font_13, text="Update Record", command=update, fg="white", bg="black", borderwidth=0)
-			edit_btn.grid(row=0, column=0, padx=10, pady=10, ipadx=10, ipady=10)
+			edit_btn.grid(row=0, column=0, padx=10, pady=10, ipadx=10, ipady=5)
 
 			delete_btn = tk.Button(btn_frame, font=font_13, text="Delete Record", command=delete, fg="white", bg="black", borderwidth=0)
-			delete_btn.grid(row=0, column=1, padx=10, pady=10, ipadx=10, ipady=10)
+			delete_btn.grid(row=0, column=1, padx=10, pady=10, ipadx=10, ipady=5)
 
 			#bind (left click release)
 			my_tree.bind("<ButtonRelease-1>", select)
   
-		#FUNCTION FOR SETUP
-		def setup():
-			#FRAME for setup
-			setupframe = tk.LabelFrame(main, bg="gray30", width=1215, height=450, borderwidth=0)
-			setupframe.grid(row=3, column=1, pady=10)
-			#force width and height on frame
-			setupframe.grid_propagate(0)
-			#Setup welcome message
-			wel_setup = tk.Label(setupframe, fg="white", bg="gray30", text="Setup ")
-			wel_setup.grid(row=6, column=1, padx=10, pady=5, sticky=tk.W)
-			wel_setup.config(font=("Calibri", 16))
-
-			def color():
-				#make global so that program can access
-				select_color = colorchooser.askcolor()
-				select_color.set("blue")
-				#call colour window
-				select_color = colorchooser.askcolor()
-				
-			sel_clr_btn = tk.Button(setupframe, text="Set Theme", command=color, borderwidth=0)
-			sel_clr_btn.grid(row=7, column=1, padx=20)
-			sel_clr_btn.config(font=("Calibri", 13))
-  
 		#FUNCTION FOR CALCULATOR
 		def calc():
+			#destroy any other frames open
+			destroy_frames()
+   			#handle current tab colour
+			handle_current_tab("calc")
 			#FRAME 
 			global calcframe
-			calcframe = tk.LabelFrame(main, bg="gray80", width=1215, height=500, borderwidth=0)
-			calcframe.grid(row=3, column=1, pady=10)
+			calcframe = tk.Frame(main, bg="gray80", width=1215, height=500, borderwidth=0)
+			calcframe.grid(row=2, column=1, sticky=tk.NSEW)
 			#force width and height on frame
 			calcframe.grid_propagate(0)
 			#Calculator welcome message
-			calc_title = tk.Label(calcframe, fg="gray10", bg="gray80", font=font_16, text="Calculator").grid(row=0, column=0, padx=10, sticky=tk.W)
+			calc_title = tk.Label(calcframe, fg="gray10", bg="gray80", font=font_16, text="Calculator").grid(row=0, column=0, pady=(10,30), padx=(20,0), ipady=4, sticky=tk.W)
 			e = tk.Entry(calcframe, width=20, borderwidth=5, font=font_16)
 			#keep separate for get functionality
 			e.grid(row=1, column=1, columnspan=3, padx=15, pady=15,  sticky=tk.NSEW)
@@ -614,22 +613,63 @@ class Program:
 			btn_clear.grid(row=5, column=3, sticky=tk.E)
 			btn_save.grid(row=7, column=4, sticky=tk.E)
    
+   
+		#function to handle destruction of frames
 		def destroy_frames():
-			#destroy frames
-			addrecordframe.destroy()
-			calcframe.destroy()
+				try:
+					addrecordframe.destroy()
+				except (NameError):
+					print("addrecordframe does not exist, nothing to destroy")
+				try:
+					showrecordframe.destroy()
+				except (NameError):
+					print("showrecordframe does not exist, nothing to destroy")
+				try:
+					calcframe.destroy()
+				except (NameError):
+					print("calcframe does not exist, nothing to destroy")
+				try:
+					searchresultsframe.destroy()
+				except (NameError):
+					print("searchresultsframe does not exist, nothing to destroy")
+
+		#function to handle current selected nav item
+		def handle_current_tab(tab):
+			if tab == "addrecord":
+				add_button['bg'] = "#254c6e"
+				show_all_button['bg'] = "#366f9e"
+				calc_button['bg'] = "#366f9e"
+				quit_button['bg'] = "#366f9e"
+			elif tab == "showall":
+				add_button['bg'] = "#366f9e"
+				show_all_button['bg'] = "#254c6e"
+				calc_button['bg'] = "#366f9e"
+				quit_button['bg'] = "#366f9e"
+			elif tab == "calc":
+				add_button['bg'] = "#366f9e"
+				show_all_button['bg'] = "#366f9e"
+				calc_button['bg'] = "#254c6e"
+				quit_button['bg'] = "#366f9e"
+			else:
+				add_button['bg'] = "#366f9e"
+				show_all_button['bg'] = "#366f9e"
+				calc_button['bg'] = "#366f9e"
+				quit_button['bg'] = "#254c6e"
+			
+				
    			
 	
 		#QUIT
 		def quit():
 			log_out = messagebox.askyesno("Log Out", "You are about to log out, are you sure ?")
-			if log_out == 'yes':
+			if log_out == 1:
 				main.destroy()
+				login.correct_label.destroy()
   
 		#--- LOGOFRAME ---#
 		#Define logoframe size/position
-		logoframe = tk.LabelFrame(main, bg="#eee", width=1366, height=125, borderwidth=0)
-		logoframe.grid(row=0, column=0, columnspan=4, ipadx=25, sticky=tk.N)
+		logoframe = tk.Frame(main, bg="#eee", width=1366, height=125, borderwidth=0)
+		logoframe.grid(row=0, column=0, columnspan=5, ipadx=25, sticky=tk.N)
 		#force width and height on frame
 		logoframe.grid_propagate(0)
 		#Define logo image and grid position (using self to stop auto garbage collection)
@@ -639,8 +679,8 @@ class Program:
   
 		#--- SEARCHFRAME ---#
 		#Define searchframe size/position
-		searchframe = tk.LabelFrame(main, bg="gray30", width=1366, height=100, borderwidth=0)
-		searchframe.grid(row=1, column=0, ipadx=25, columnspan=4, sticky=tk.N)
+		searchframe = tk.Frame(main, bg="gray30", width=1366, height=100, borderwidth=0)
+		searchframe.grid(row=1, column=0, ipadx=25, columnspan=5, sticky=tk.N)
 		#Force width and height on frame
 		searchframe.grid_propagate(0)
   
@@ -667,36 +707,28 @@ class Program:
   
 		#--- BUTTONFRAME ---#
 		#Create button frame
-		buttonframe = tk.LabelFrame(main, bg="#6492b6", borderwidth=0)
-		buttonframe.grid(row=3, column=0, ipady=120, sticky=tk.NW)
+		buttonframe = tk.Frame(main, bg="#6492b6", borderwidth=0)
+		buttonframe.grid(row=2, column=0, ipady=170, sticky=tk.NW)
 
   
 		#--- MENU BUTTONS ---#
 		#Add button - calls add_record() / submit_record()
-		global add_button
-		add_button = tk.Button(buttonframe, text="Add Record", command=add_record,  fg="white", bg="#366f9e", borderwidth=0)
+		#global for handle_current_tab()
+		global add_button, show_all_button, calc_button
+		add_button = tk.Button(buttonframe, font=font_13, text="Add Record", command=add_record,  fg="white", bg="#366f9e", borderwidth=0)
 		add_button.grid(row=3, column=0, ipadx=56, ipady=10, sticky=tk.W)
-		add_button.config(font=("Calibri", 13))
   
 		#Show all records button = calls show_all()
-		show_all_button = tk.Button(buttonframe, text="Show All Records", command=show_all, fg="white", bg="#366f9e", borderwidth=0)
+		show_all_button = tk.Button(buttonframe, font=font_13, text="Show All Records", command=show_all, fg="white", bg="#366f9e", borderwidth=0)
 		show_all_button.grid(row=4, column=0, ipadx=36, ipady=10, sticky=tk.W)
-		show_all_button.config(font=("Calibri", 13))
   
 		#calculator button
-		calc_button = tk.Button(buttonframe, text="Calculator", command=calc,  fg="white", bg="#366f9e", borderwidth=0)
+		calc_button = tk.Button(buttonframe, font=font_13, text="Calculator", command=calc,  fg="white", bg="#366f9e", borderwidth=0)
 		calc_button.grid(row=6, column=0, ipadx=61, ipady=10, sticky=tk.W)
-		calc_button.config(font=("Calibri", 13))
-
-		#Setup button - calls DEF SETUP
-		setup_button = tk.Button(buttonframe, text="Setup", command=setup, fg="white", bg="#366f9e", borderwidth=0)
-		setup_button.grid(row=7, column=0, ipadx=76, ipady=10, sticky=tk.W)
-		setup_button.config(font=("Calibri", 13))
-
+  
 		#Quit button - calls DEF QUIT
-		quit_button = tk.Button(buttonframe, text="Quit", command=quit,  fg="white", bg="#366f9e", borderwidth=0)
+		quit_button = tk.Button(buttonframe, font=font_13, text="Quit", command=quit,  fg="white", bg="#366f9e", borderwidth=0)
 		quit_button.grid(row=8, column=0, ipadx=81, ipady=10, sticky=tk.W)
-		quit_button.config(font=("Calibri", 13))
   
   
   
