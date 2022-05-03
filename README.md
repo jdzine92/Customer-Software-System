@@ -1,6 +1,7 @@
 # Python CRM Demo
 ##### A generic system to store customer details, built with Python, Tkinter and SQlite. Currently has basic functionalities only due to myself being the sole developer of this application. If time allows I will further develop some more complex ideas.
-##### Username: j <br> Password: 1 <br> for demo purposes
+##### Username: j <br> Password: 1 <br> FOR DEMO PURPOSES ONLY
+***
 #### How to use:
 + Clone this repo / save files to PC (make sure all files are in 1 folder)
 + Download [Git Bash Terminal](https://gitforwindows.org/)
@@ -10,10 +11,9 @@
 + Install tkinter using pip, console command:   ***pip install tk***
 + Run MAIN2.py in your console to launch appliction, console command:   ***py MAIN2.py*** <br>
 *make sure you are in the correct directory, Example:  cd C:\Downloads\CRM-Demo
-
-![alt text][login]
-
 ***
+![alt text][login]
+<br>
 ![alt text][system]
 
 
